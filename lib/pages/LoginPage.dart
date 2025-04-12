@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:litmedia/pages/forgetpass.dart';
+import 'package:litmedia/pages/homepage.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/MyButtons.dart';
 import 'package:litmedia/widget/textfieldcreate.dart';
 
-class Loginpage extends StatefulWidget 
-{
+class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
 
   @override
   State<Loginpage> createState() => _LoginpageState();
 }
+
 class _LoginpageState extends State<Loginpage> {
   bool _obscureText = false;
   @override
@@ -92,7 +93,12 @@ class _LoginpageState extends State<Loginpage> {
                               horizontal: 50, vertical: 20),
                           child: MyElevatedButton(
                               buttonLabel: "Log in",
-                              onPressedFct: () {},
+                              onPressedFct: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Homepage()));
+                              },
                               color1: AppColors.vibrantBlue,
                               color2: Colors.white,
                               color3: Colors.black),
