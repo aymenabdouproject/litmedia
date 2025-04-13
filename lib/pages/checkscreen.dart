@@ -38,7 +38,7 @@ class Checkscreen extends StatelessWidget {
                       color3: AppColors.vibrantBlue,
                       buttonLabel: 'sign in',
                       onPressedFct: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Loginpage()));
@@ -52,7 +52,7 @@ class Checkscreen extends StatelessWidget {
                       color3: Colors.black,
                       buttonLabel: 'create an account',
                       onPressedFct: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Createanaccount()));

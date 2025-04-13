@@ -94,7 +94,7 @@ class _LoginpageState extends State<Loginpage> {
                           child: MyElevatedButton(
                               buttonLabel: "Log in",
                               onPressedFct: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Homepage()));
