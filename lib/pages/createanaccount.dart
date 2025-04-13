@@ -127,7 +127,7 @@ class _CreateanaccountState extends State<Createanaccount> {
                                   child: Image.asset("images/facebook.png")),
                               GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
@@ -146,7 +146,7 @@ class _CreateanaccountState extends State<Createanaccount> {
                         Textt(
                             text1: "Login",
                             onPressedFct: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => Loginpage()));

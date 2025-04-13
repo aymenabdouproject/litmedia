@@ -4,21 +4,52 @@ import 'package:litmedia/widget/CategoryButton.dart';
 import 'package:litmedia/widget/bookcard.dart';
 
 class Homepage extends StatelessWidget {
+  final List<Map<String, dynamic>> menuItems = [
+    {
+      'icon': Icons.favorite,
+      'name': 'favorite',
+    },
+    {
+      'icon': Icons.notifications,
+      'name': 'notification',
+    },
+    {
+      'icon': Icons.flag,
+      'name': 'challenge',
+    },
+    {
+      'icon': Icons.create,
+      'name': 'create content',
+    },
+    {
+      'icon': Icons.menu_book,
+      'name': 'publish a book',
+    },
+    {
+      'icon': Icons.local_offer,
+      'name': 'Promotions',
+    },
+    {
+      'icon': Icons.settings,
+      'name': 'Settings',
+    },
+    {
+      'icon': Icons.logout,
+      'name': 'Log out',
+    },
+  ];
   final List<Map<String, String>> books = [
     {
       "title": "Qahirah - stories",
       "author": "@author1",
-      "image": "https://link.to/qahirah.jpg",
     },
     {
       "title": "arabe civilization",
       "author": "@author2",
-      "image": "https://link.to/arabciv.jpg",
     },
     {
       "title": "my first and only love",
       "author": "@author2",
-      "image": "https://link.to/myfirstlove.jpg",
     },
   ];
   Homepage({super.key});
@@ -27,23 +58,84 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: Drawer(
+          backgroundColor: AppColors.darkPurple,
+          child: IconTheme(
+              data: IconThemeData(
+                color: AppColors.offWhite,
+                size: 30,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: double.maxFinite,
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          decoration: BoxDecoration(
+                              color: AppColors.grayPurple,
+                              borderRadius: BorderRadius.circular(
+                                MediaQuery.of(context).size.width * 0.2,
+                              )),
+                          height: MediaQuery.of(context).size.width * 0.2,
+                          width: MediaQuery.of(context).size.width * 0.2,
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Medelci Abdou",
+                              style: TextStyle(color: AppColors.offWhite),
+                            ),
+                            TextButton(
+                              style: ButtonStyle(
+                                overlayColor: MaterialStateProperty.all(
+                                    Colors.transparent), // No splash
+                                padding: MaterialStateProperty.all(
+                                    EdgeInsets.zero), // Remove padding
+                                tapTargetSize: MaterialTapTargetSize
+                                    .shrinkWrap, // Minimizes clickable area
+                              ),
+                              onPressed: () {},
+                              child: Text("more details"),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: menuItems.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: Icon(
+                            menuItems[index]['icon'],
+                            color: AppColors.offWhite,
+                          ),
+                          title: Text(
+                            menuItems[index]['name'],
+                            style: TextStyle(color: AppColors.offWhite),
+                          ),
+                          onTap: () {},
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              )),
+        ),
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.menu,
-              color: Colors.black,
-              size: 35,
-            ),
-          ),
+          iconTheme: IconThemeData(size: 30, color: AppColors.offWhite),
           backgroundColor: AppColors.gris,
           actions: [
             IconButton(
               onPressed: () {},
               icon: Icon(
                 Icons.search,
-                size: 30,
-                color: Colors.black,
               ),
             )
           ],
@@ -87,42 +179,30 @@ class Homepage extends StatelessWidget {
                             child: Bookcard(
                               title: book['title']!,
                               author: book['author']!,
-                              imageUrl: book['image']!,
                             ));
                       },
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Categories",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Categories",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(15),
-                        child: Categorybutton(
-                            label: 'fictions',
-                            backgroundColor: AppColors.darkPurple),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(15),
-                        child: Categorybutton(
-                            label: 'fictions',
-                            backgroundColor: AppColors.darkPurple),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(15),
-                        child: Categorybutton(
-                            label: 'fictions',
-                            backgroundColor: AppColors.darkPurple),
-                      )
+                      Categorybutton(
+                          label: 'fictions',
+                          backgroundColor: AppColors.darkPurple),
+                      Categorybutton(
+                          label: 'fictions',
+                          backgroundColor: AppColors.darkPurple),
+                      Categorybutton(
+                          label: 'fictions',
+                          backgroundColor: AppColors.darkPurple),
                     ],
                   )
                 ],
