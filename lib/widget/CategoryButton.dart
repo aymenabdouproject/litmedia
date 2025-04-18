@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Categorybutton extends StatelessWidget {
   final String label;
   final Color backgroundColor;
+
   const Categorybutton(
       {super.key, required this.label, required this.backgroundColor});
 
@@ -23,8 +24,8 @@ class Categorybutton extends StatelessWidget {
             label,
             style: const TextStyle(
               color: Colors.white,
-              fontFamily: 'YourCustomFont',
-              fontSize: 16,
+              fontFamily: "Sancreek",
+              fontSize: 15,
               fontWeight: FontWeight.bold,
             ),
           ),
