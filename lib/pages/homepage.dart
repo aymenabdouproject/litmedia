@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/CategoryButton.dart';
 import 'package:litmedia/widget/bookcard.dart';
+import 'package:litmedia/widget/for_you_section.dart';
+import 'package:litmedia/widget/info.dart';
 
 class Homepage extends StatelessWidget {
   final List<Map<String, dynamic>> menuItems = [
@@ -135,7 +137,7 @@ class Homepage extends StatelessWidget {
             IconButton(
               onPressed: () {},
               icon: Icon(
-                Icons.search,
+                Icons.notifications,
               ),
             )
           ],
@@ -151,63 +153,168 @@ class Homepage extends StatelessWidget {
                 color: AppColors.gris,
               ),
               height: MediaQuery.of(context).size.height * 0.3,
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "New Releases",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      Icon(Icons.add),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 230,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: books.length,
-                      itemBuilder: (context, index) {
-                        final book = books[index];
-                        return Padding(
-                            padding: const EdgeInsets.only(right: 16.0),
-                            child: Bookcard(
-                              title: book['title']!,
-                              author: book['author']!,
-                            ));
-                      },
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
+                  Container(
+                    margin: EdgeInsets.only(left: 30, top: 16, bottom: 30),
                     child: Text(
-                      "Categories",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      "Hello User,\n What do you want to read",
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontFamily: "RozhaOne",
+                          color: Colors.white),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Categorybutton(
-                          label: 'fictions',
-                          backgroundColor: AppColors.darkPurple),
-                      Categorybutton(
-                          label: 'fictions',
-                          backgroundColor: AppColors.darkPurple),
-                      Categorybutton(
-                          label: 'fictions',
-                          backgroundColor: AppColors.darkPurple),
-                    ],
+                  Expanded(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, bottom: 20),
+                          child: ForYouSection(
+                            title: 'The red of Sea',
+                            likes: '3.3K',
+                            rating: 4.3,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, bottom: 20),
+                          child: ForYouSection(
+                            title: 'The red of Sea',
+                            likes: '3.3K',
+                            rating: 4.3,
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),
-            )
+            ),
+            Expanded(
+                child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: 10, right: 10, bottom: 20),
+                              child: Text(
+                                "New Releases",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(
+                                    top: 10, right: 10, bottom: 20),
+                                child: Icon(Icons.add)),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 230,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: books.length,
+                            itemBuilder: (context, index) {
+                              final book = books[index];
+                              return Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: Bookcard(
+                                    title: book['title']!,
+                                    author: book['author']!,
+                                  ));
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 10, right: 10),
+                          child: Info(
+                            image1: "images/filter1.png",
+                            title: "For Readers ",
+                            text:
+                                "Immerse yourself in interactive stories enhanced with multimedia elements. ",
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 10, right: 10),
+                          child: Info(
+                            image1: "images/filter2.png",
+                            title: "For Artists ",
+                            text:
+                                "Join a creative community and bring stories to life through your art.",
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 10, right: 10),
+                          child: Info(
+                            image1: "images/filter3.png",
+                            title: "For Writers ",
+                            text:
+                                "Connect with readers and showcase your work in new, exciting way",
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(20),
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Categories",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              Icon(Icons.expand_more_sharp),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 16, right: 8),
+                                  child: Categorybutton(
+                                      label: 'fictions',
+                                      backgroundColor: AppColors.darkPurple),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 16, right: 8),
+                                  child: Categorybutton(
+                                      label: 'History',
+                                      backgroundColor: AppColors.greywhite),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 16, right: 8),
+                                  child: Categorybutton(
+                                      label: 'Poetry',
+                                      backgroundColor:
+                                          AppColors.electricPurple),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 16, right: 8),
+                                  child: Categorybutton(
+                                      label: 'Poetry',
+                                      backgroundColor:
+                                          AppColors.electricPurple),
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ))
           ],
         ),
       ),

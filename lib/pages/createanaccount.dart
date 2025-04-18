@@ -15,7 +15,7 @@ class Createanaccount extends StatefulWidget {
 class _CreateanaccountState extends State<Createanaccount> {
   bool _obscureText1 = false;
   bool _obscureText2 = false;
-  bool _obscureText3 = false;
+  final bool _obscureText3 = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
