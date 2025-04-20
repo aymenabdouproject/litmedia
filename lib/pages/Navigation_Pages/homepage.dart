@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:litmedia/pages/Auth_Pages/checkscreen.dart';
+import 'package:litmedia/pages/Navigation_Pages/savepage.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/CategoryButton.dart';
 import 'package:litmedia/widget/bookcard.dart';
@@ -10,34 +12,42 @@ class Homepage extends StatelessWidget {
     {
       'icon': Icons.favorite,
       'name': 'favorite',
+      'navigate': Savepage(),
     },
     {
       'icon': Icons.notifications,
       'name': 'notification',
+      'navigate': null,
     },
     {
       'icon': Icons.flag,
       'name': 'challenge',
+      'navigate': null,
     },
     {
       'icon': Icons.create,
       'name': 'create content',
+      'navigate': null,
     },
     {
       'icon': Icons.menu_book,
       'name': 'publish a book',
+      'navigate': null,
     },
     {
       'icon': Icons.local_offer,
       'name': 'Promotions',
+      'navigate': null,
     },
     {
       'icon': Icons.settings,
       'name': 'Settings',
+      'navigate': null,
     },
     {
       'icon': Icons.logout,
       'name': 'Log out',
+      'navigate': Checkscreen(),
     },
   ];
   final List<Map<String, String>> books = [
@@ -122,7 +132,14 @@ class Homepage extends StatelessWidget {
                             menuItems[index]['name'],
                             style: TextStyle(color: AppColors.offWhite),
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      menuItems[index]["navigate"],
+                                ));
+                          },
                         );
                       },
                     ),

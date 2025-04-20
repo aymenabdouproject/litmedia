@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:litmedia/pages/LoginPage.dart';
-import 'package:litmedia/pages/PhoneLogin.dart';
+import 'package:litmedia/pages/Auth_Pages/LoginPage.dart';
+import 'package:litmedia/pages/Auth_Pages/PhoneLogin.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/MyButtons.dart';
 import 'package:litmedia/widget/textfieldcreate.dart';
