@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:litmedia/pages/forgetpass.dart';
-import 'package:litmedia/pages/homepage.dart';
+import 'package:litmedia/pages/Auth_Pages/forgetpass.dart';
+import 'package:litmedia/pages/Navigation_Pages/homepage.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/MyButtons.dart';
+import 'package:litmedia/widget/navigationbar.dart';
 import 'package:litmedia/widget/textfieldcreate.dart';
 
 class Loginpage extends StatefulWidget {
@@ -97,7 +98,7 @@ class _LoginpageState extends State<Loginpage> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Homepage()));
+                                        builder: (context) => Navigationbar()));
                               },
                               color1: AppColors.vibrantBlue,
                               color2: Colors.white,

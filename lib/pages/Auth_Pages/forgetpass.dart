@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:litmedia/pages/newpass.dart';
+import 'package:litmedia/pages/Auth_Pages/newpass.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/MyButtons.dart';
 import 'package:litmedia/widget/textfieldcreate.dart';

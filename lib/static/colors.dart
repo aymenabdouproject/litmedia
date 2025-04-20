@@ -10,4 +10,5 @@ class AppColors {
   static const Color electricPurple = Color(0xFF7C3AED);
   static const Color greywhite = Color(0xFFD0CCEF);
   static const Color gris = Color(0xFF242038);
+  static const Color purpleclair = Color(0xFFC4C0E3);
 }

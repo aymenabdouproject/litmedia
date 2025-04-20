@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:litmedia/pages/checkscreen.dart';
+import 'package:litmedia/pages/welcomepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'LitMedia',
       theme: ThemeData(fontFamily: "RocknRollOne"),
       debugShowCheckedModeBanner: false,
-      home: Checkscreen(),
+      home: Welcomepage(),
     );
   }
 }
