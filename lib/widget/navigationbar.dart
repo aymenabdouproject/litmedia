@@ -38,37 +38,46 @@ class _NavigationbarState extends State<Navigationbar> {
   ];
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.offWhite,
       body: pages[selectedIndex],
       bottomNavigationBar: Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.009),
           decoration: BoxDecoration(
             color: AppColors.purpleclair,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            borderRadius:
+                BorderRadius.vertical(top: Radius.circular(screenWidth * 0.08)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(pages.length, (index) {
               if (index == selectedIndex) {
                 return Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.03,
+                      vertical: screenHeight * 0.01),
                   decoration: BoxDecoration(
                     color: AppColors.offWhite,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(screenWidth * 0.05),
                   ),
                   child: Row(
                     children: [
-                      Icon(icons[index], size: 20, color: Colors.black),
-                      SizedBox(width: 6),
+                      Icon(icons[index],
+                          size: screenWidth * 0.05, color: Colors.black),
+                      SizedBox(width: screenWidth * 0.015),
                       Text(nameindex[index],
-                          style: TextStyle(color: AppColors.vibrantBlue)),
+                          style: TextStyle(
+                              color: AppColors.vibrantBlue,
+                              fontSize: screenWidth * 0.035)),
                     ],
                   ),
                 );
               } else {
                 return IconButton(
-                  icon: Icon(icons[index], size: 28, color: Colors.black),
+                  icon: Icon(icons[index],
+                      size: screenWidth * 0.07, color: Colors.black),
                   onPressed: () {
                     setState(() {
                       selectedIndex = index;

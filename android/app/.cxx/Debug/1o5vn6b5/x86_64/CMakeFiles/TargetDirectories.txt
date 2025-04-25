@@ -1,0 +1,2 @@
+D:/flutterP/litmedia/android/app/.cxx/Debug/1o5vn6b5/x86_64/CMakeFiles/edit_cache.dir
+D:/flutterP/litmedia/android/app/.cxx/Debug/1o5vn6b5/x86_64/CMakeFiles/rebuild_cache.dir

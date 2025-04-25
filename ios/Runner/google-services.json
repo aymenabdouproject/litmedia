@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "306163914010",
+    "project_id": "literature-media",
+    "storage_bucket": "literature-media.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:306163914010:android:a91d4e4996b7f1d81d08a3",
+        "android_client_info": {
+          "package_name": "com.example.litmedia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0N0m69Afq_R7KGuzFq_HXpmgJMMveWpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

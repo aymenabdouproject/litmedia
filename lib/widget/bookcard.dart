@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 class Bookcard extends StatelessWidget {
   final String title;
   final String author;
+  final String imageUrl;
 
   const Bookcard({
     super.key,
     required this.title,
     required this.author,
-
+    required this.imageUrl,
   });
 
   @override
@@ -21,16 +22,14 @@ class Bookcard extends StatelessWidget {
           Container(
             width: 101,
             height: 141,
-            decoration: BoxDecoration(
+            child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 6,
-                  offset: Offset(2, 4),
-                )
-              ],
+              child: Image.network(
+                imageUrl,
+                width: 101,
+                height: 141,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(height: 8),

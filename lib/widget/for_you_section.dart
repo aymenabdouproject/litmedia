@@ -12,17 +12,20 @@ class ForYouSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      width: 215,
-      height: 130,
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(right: 16),
+      width: screenWidth * 0.6,
+      height: screenHeight * 0.2,
+      padding: EdgeInsets.all(screenWidth * 0.04),
+      margin: EdgeInsets.only(right: screenWidth * 0.04),
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(32)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(screenWidth * 0.08)),
       child: Row(
         children: [
-          const SizedBox(
-            width: 16,
+          SizedBox(
+            width: screenWidth * 0.04,
           ),
           Expanded(
               child: Column(
@@ -30,32 +33,37 @@ class ForYouSection extends StatelessWidget {
             children: [
               Text(
                 title,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: screenWidth * 0.045, fontWeight: FontWeight.bold),
                 maxLines: 2,
               ),
-              const SizedBox(
-                height: 16,
+              SizedBox(
+                height: screenHeight * 0.02,
               ),
               Row(
                 children: [
                   Text(
                     rating.toString(),
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: TextStyle(
+                        fontSize: screenWidth * 0.035, color: Colors.grey),
                   ),
-                  const SizedBox(
-                    width: 12,
+                  SizedBox(
+                    width: screenWidth * 0.03,
                   ),
                   Container(
-                    padding: const EdgeInsetsDirectional.symmetric(
-                        horizontal: 12, vertical: 6),
+                    padding: EdgeInsetsDirectional.symmetric(
+                        horizontal: screenWidth * 0.03,
+                        vertical: screenHeight * 0.01),
                     decoration: BoxDecoration(
                         color: Color(0xFFD9CFFF),
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius:
+                            BorderRadius.circular(screenWidth * 0.05)),
                     child: Text(
                       likes,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.purple),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.purple,
+                          fontSize: screenWidth * 0.035),
                     ),
                   )
                 ],
