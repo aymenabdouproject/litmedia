@@ -52,6 +52,10 @@ class _NewpassState extends State<Newpass> {
               text1: "",
               text2: "new password",
               prefix: Icon(null),
+              validator: (String? value) {
+                return null;
+              },
+              decoration: InputDecoration(),
             ),
           ),
           Text(

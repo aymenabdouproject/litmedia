@@ -3,7 +3,7 @@ import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/MyButtons.dart';
 
 class Phoneverify extends StatelessWidget {
-  const Phoneverify({super.key});
+  const Phoneverify({super.key, required String verificationId});
 
   @override
   Widget build(BuildContext context) {

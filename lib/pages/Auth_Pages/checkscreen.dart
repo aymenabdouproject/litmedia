@@ -9,60 +9,102 @@ class Checkscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-        backgroundColor: AppColors.offWhite,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 447,
-              width: 447,
-              decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage("images/logo.png"))),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 50),
-              height: 45,
-              width: 301,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("images/textlogo.png"))),
-            ),
-            Text("Ready to Transform Your Reading Journey?"),
-            Column(
+      backgroundColor: AppColors.offWhite,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      top: 100, right: 50, left: 50, bottom: 10),
-                  child: MyElevatedButton(
-                      color3: AppColors.vibrantBlue,
-                      buttonLabel: 'sign in',
-                      onPressedFct: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Loginpage()));
-                      },
-                      color1: AppColors.vibrantBlue,
-                      color2: Colors.white),
+                SizedBox(height: screenHeight * 0.04),
+                SizedBox(
+                  height: constraints.maxHeight * 0.35,
+                  child: Center(
+                    child: Image.asset(
+                      'images/logo.png',
+                      height: screenHeight *
+                          0.2, // Adjust height based on screen size
+                      width: screenHeight *
+                          0.2, // Adjust width based on screen size
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
+                SizedBox(height: screenHeight * 0.01),
                 Container(
-                  margin: EdgeInsets.only(right: 50, left: 50),
-                  child: MyElevatedButton(
-                      color3: Colors.black,
-                      buttonLabel: 'create an account',
-                      onPressedFct: () {
-                        Navigator.pushReplacement(
+                  margin: const EdgeInsets.only(bottom: 30),
+                  height: screenHeight * 0.05,
+                  width: screenWidth * 0.8,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("images/textlogo.png"),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.06),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                  child: Text(
+                    "Ready to Transform Your Reading Journey?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.045, // Responsive font size
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.09),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.1,
+                        vertical: screenHeight * 0.02,
+                      ),
+                      child: MyElevatedButton(
+                        color3: AppColors.vibrantBlue,
+                        buttonLabel: 'sign in',
+                        onPressedFct: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Createanaccount()));
-                      },
-                      color1: AppColors.greywhite,
-                      color2: Colors.black),
+                                builder: (context) => Loginpage()),
+                          );
+                        },
+                        color1: AppColors.vibrantBlue,
+                        color2: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      margin:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                      child: MyElevatedButton(
+                        color3: Colors.black,
+                        buttonLabel: 'create an account',
+                        onPressedFct: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Createanaccount(),
+                            ),
+                          );
+                        },
+                        color1: AppColors.greywhite,
+                        color2: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
               ],
-            )
-          ],
-        ));
+            ),
+          );
+        },
+      ),
+    );
   }
 }
