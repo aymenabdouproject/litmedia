@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:litmedia/pages/Navigation_Pages/flagpage.dart';
 import 'package:litmedia/pages/Navigation_Pages/homepage.dart';
-import 'package:litmedia/pages/Navigation_Pages/playpage.dart';
+import 'package:litmedia/pages/Navigation_Pages/mediapage.dart';
 import 'package:litmedia/pages/Navigation_Pages/savepage.dart';
 import 'package:litmedia/pages/Navigation_Pages/searchpage.dart';
 import 'package:litmedia/static/colors.dart';
@@ -18,7 +18,7 @@ class _NavigationbarState extends State<Navigationbar> {
   final List pages = [
     Homepage(),
     Searchpage(),
-    Playpage(),
+    Mediapage(),
     Flagpage(),
     Savepage(),
   ];
@@ -32,7 +32,7 @@ class _NavigationbarState extends State<Navigationbar> {
   final List<String> nameindex = [
     "home",
     "Search",
-    "play",
+    "media",
     "flag",
     "Save",
   ];
