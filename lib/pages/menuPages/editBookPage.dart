@@ -9,8 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:litmedia/pages/auth/auth_service.dart';
-import 'package:litmedia/pages/bloc/book_bloc.dart';
-import 'package:litmedia/pages/bloc/book_event.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:litmedia/pages/model/book.dart';
 import 'package:litmedia/pages/service/database.dart';
