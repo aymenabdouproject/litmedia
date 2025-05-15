@@ -30,11 +30,11 @@ class Welcom extends StatelessWidget {
           Text(text),
           ElevatedButton(
             onPressed: onDismiss,
-            child: Text("OK"),
             style: ElevatedButton.styleFrom(
                 minimumSize: Size(100, 40),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
+            child: Text("OK"),
           )
         ],
       ),

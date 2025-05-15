@@ -88,7 +88,8 @@ class Phoneverify extends StatelessWidget {
 class OTPInputField extends StatelessWidget {
   final bool isLast;
 
-  OTPInputField({
+  const OTPInputField({
+    super.key,
     required this.isLast,
   });
 

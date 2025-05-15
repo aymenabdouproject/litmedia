@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:litmedia/pages/Auth_Pages/LoginPage.dart';
 import 'package:litmedia/pages/Auth_Pages/PhoneLogin.dart';
-import 'package:litmedia/pages/Navigation_Pages/homepage.dart';
 import 'package:litmedia/pages/auth/auth_service.dart';
 import 'package:litmedia/pages/model/user.dart';
-import 'package:litmedia/pages/wrapper.dart';
 import 'package:litmedia/shared/loading.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/MyButtons.dart';
@@ -34,8 +31,6 @@ class _CreateanaccountState extends State<Createanaccount> {
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
     return _isLoading
         ? Loading()
         : Scaffold(
@@ -257,7 +252,9 @@ class _CreateanaccountState extends State<Createanaccount> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  Navigationbar(),
+                                                  Navigationbar(
+                                                uploadedMediaUrls: {},
+                                              ),
                                             ),
                                           );
                                         }

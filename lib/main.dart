@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:litmedia/firebase_options.dart';
-import 'package:litmedia/pages/Navigation_Pages/homepage.dart';
 import 'package:litmedia/pages/auth/auth_service.dart';
 import 'package:litmedia/pages/model/user.dart';
 import 'package:litmedia/pages/welcomepage.dart';
+import 'package:litmedia/widget/media_provider.dart';
 import 'package:litmedia/widget/navigationbar.dart';
 import 'package:provider/provider.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,6 +43,9 @@ class MyApp extends StatelessWidget {
             username: 'anonyme',
           ),
         ),
+        ChangeNotifierProvider<MediaProvider>(
+          create: (_) => MediaProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -51,7 +54,9 @@ class MyApp extends StatelessWidget {
             // Check if the user is logged in
             if (user != null) {
               // User is logged in, navigate to HomeScreen
-              return Navigationbar(); // Replace with your actual home screen widget
+              return Navigationbar(
+                uploadedMediaUrls: {},
+              ); // Replace with your actual home screen widget
             } else {
               // User is not logged in, show OnboardingScreen
               return OnboardingScreen();

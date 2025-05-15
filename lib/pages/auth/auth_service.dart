@@ -154,6 +154,55 @@ class AuthService {
     }
   }
 
+  /// Function to verify if the entered password is correct for the currently logged-in user
+  Future<bool> verifyUserPassword(String enteredPassword) async {
+    try {
+      // Get the currently logged-in user
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+
+      // Ensure the user is logged in
+      if (currentUser == null) {
+        throw FirebaseAuthException(
+          code: 'user-not-logged-in',
+          message: 'No user is currently logged in.',
+        );
+      }
+
+      // Retrieve the user's email
+      final String? userEmail = currentUser.email;
+
+      if (userEmail == null) {
+        throw FirebaseAuthException(
+          code: 'email-not-available',
+          message: 'Email is not available for the current user.',
+        );
+      }
+
+      // Create an EmailAuthCredential using the email and entered password
+      final AuthCredential credential = EmailAuthProvider.credential(
+        email: userEmail,
+        password: enteredPassword,
+      );
+
+      // Re-authenticate the user with the credential
+      await currentUser.reauthenticateWithCredential(credential);
+
+      // If no exception is thrown, the password is correct
+      return true;
+    } catch (e) {
+      // Handle specific Firebase exceptions if needed
+      if (e is FirebaseAuthException) {
+        if (e.code == 'wrong-password') {
+          // Password is incorrect
+          return false;
+        }
+      }
+
+      // Re-throw the error for unexpected cases
+      rethrow;
+    }
+  }
+
   //Sign In
   Future<CustomUser?> signInWithEmailPassword(
     String email,
@@ -299,7 +348,7 @@ class AuthService {
       return await _auth.signOut();
     } catch (e) {
       print(e.toString());
-      return null;
+      return;
     }
   }
 

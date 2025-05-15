@@ -212,7 +212,9 @@ class _LoginpageState extends State<Loginpage> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      Navigationbar(),
+                                                      Navigationbar(
+                                                    uploadedMediaUrls: {},
+                                                  ),
                                                 ),
                                               );
                                             }

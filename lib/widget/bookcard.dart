@@ -19,7 +19,7 @@ class Bookcard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             width: 101,
             height: 141,
             child: ClipRRect(

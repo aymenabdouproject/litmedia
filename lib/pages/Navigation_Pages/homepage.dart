@@ -1,17 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:litmedia/pages/Navigation_Pages/PublishABook.dart';
 import 'package:litmedia/pages/Navigation_Pages/savepage.dart';
 import 'package:litmedia/pages/auth/auth_service.dart';
+import 'package:litmedia/pages/menuPages/createContent.dart';
+import 'package:litmedia/pages/menuPages/deleteupdateB.dart';
+import 'package:litmedia/pages/model/multimedia.dart';
 import 'package:litmedia/pages/model/user.dart';
-import 'package:litmedia/pages/service/database.dart';
 import 'package:litmedia/pages/wrapper.dart';
 import 'package:litmedia/static/colors.dart';
 import 'package:litmedia/widget/CategoryButton.dart';
 import 'package:litmedia/widget/bookcard.dart';
 import 'package:litmedia/widget/for_you_section.dart';
 import 'package:litmedia/widget/info.dart';
+import 'package:litmedia/widget/media_provider.dart';
+import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -20,48 +23,115 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  final List<Map<String, dynamic>> menuItems = [
-    {
-      'icon': Icons.favorite,
-      'name': 'favorite',
-      'navigate': Savepage(),
-    },
-    {
-      'icon': Icons.notifications,
-      'name': 'notification',
-      'navigate': null,
-    },
-    {
-      'icon': Icons.flag,
-      'name': 'challenge',
-      'navigate': null,
-    },
-    {
-      'icon': Icons.create,
-      'name': 'create content',
-      'navigate': null,
-    },
-    {
-      'icon': Icons.menu_book,
-      'name': 'publish a book',
-      'navigate': MultiFormPage(),
-    },
-    {
-      'icon': Icons.local_offer,
-      'name': 'Promotions',
-      'navigate': null,
-    },
-    {
-      'icon': Icons.settings,
-      'name': 'Settings',
-      'navigate': null,
-    },
-    {
-      'icon': Icons.logout,
-      'name': 'Log out',
-      'navigate': 'logout',
-    },
-  ];
+  late TextEditingController searchController;
+  late List<Map<String, dynamic>> menuItems;
+
+  List<Map<String, dynamic>> buildMenuItems(
+    TextEditingController controller,
+    Function(String) onSearch,
+    Function(Multimedia) onMediaUploaded,
+  ) {
+    return [
+      {
+        'icon': Icons.favorite,
+        'name': 'favorite',
+        'navigate': Savepage(),
+      },
+      {
+        'icon': Icons.create,
+        'name': 'create content',
+        'navigate': CreateContent(
+          controller: controller,
+          onSearch: onSearch,
+          onMediaUploaded: onMediaUploaded,
+        ),
+      },
+      {
+        'icon': Icons.menu_book,
+        'name': 'publish a book',
+        'navigate': Deleteupdateb(),
+      },
+      {
+        'icon': Icons.local_offer,
+        'name': 'Promotions',
+        'navigate': null,
+      },
+      {
+        'icon': Icons.settings,
+        'name': 'Settings',
+        'navigate': null,
+      },
+      {
+        'icon': Icons.logout,
+        'name': 'Log out',
+        'navigate': wrapper(),
+      },
+    ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final currentUser = FirebaseAuth.instance.currentUser;
+    searchController = TextEditingController();
+    menuItems = [
+      {
+        'icon': Icons.favorite,
+        'name': 'favorite',
+        'navigate': Savepage(),
+      },
+      {
+        'icon': Icons.notifications,
+        'name': 'notification',
+        'navigate': null,
+      },
+      {
+        'icon': Icons.flag,
+        'name': 'challenge',
+        'navigate': null,
+      },
+      {
+        'icon': Icons.create,
+        'name': 'create content',
+        'navigate': Builder(
+          builder: (context) => CreateContent(
+            controller: searchController,
+            onSearch: (query) {
+              print('Searching for: $query');
+            },
+            onMediaUploaded: (Multimedia media) {
+              Provider.of<MediaProvider>(context, listen: false)
+                  .addMedia(media);
+            },
+          ),
+        ),
+      },
+      {
+        'icon': Icons.menu_book,
+        'name': 'publish a book',
+        'navigate': Deleteupdateb(),
+      },
+      {
+        'icon': Icons.local_offer,
+        'name': 'Promotions',
+        'navigate': null,
+      },
+      {
+        'icon': Icons.settings,
+        'name': 'Settings',
+        'navigate': null,
+      },
+      {
+        'icon': Icons.logout,
+        'name': 'Log out',
+        'navigate': wrapper(),
+      },
+    ];
+    if (currentUser != null) {
+      fetchUserDetails(currentUser.email!);
+    }
+  }
+
   final List<Map<String, String>> books = [
     {
       "title": "Qahirah - stories",
@@ -80,12 +150,9 @@ class _HomepageState extends State<Homepage> {
   CustomUser? _user;
 
   @override
-  void initState() {
-    super.initState();
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      fetchUserDetails(currentUser.email!);
-    }
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   void fetchUserDetails(String email) async {
@@ -276,38 +343,42 @@ class _HomepageState extends State<Homepage> {
                           SizedBox(
                             height: screenHeight * 0.3,
                             child: StreamBuilder<QuerySnapshot>(
-                                stream: _db.collection('book').snapshots(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  }
-                                  if (snapshot.hasError) {
-                                    return Center(
-                                        child:
-                                            Text('Error: ${snapshot.error}'));
-                                  }
-                                  final book = snapshot.data!.docs;
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: books.length,
-                                    itemBuilder: (context, index) {
-                                      var Book = book[index].data()
-                                          as Map<String, dynamic>;
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                            right: screenWidth * 0.04),
-                                        child: Bookcard(
-                                          title: Book['title'] ?? 'no Title',
-                                          author: Book['author'] ??
-                                              'Unknown Author',
-                                          imageUrl: Book['bookCover'] ?? '',
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }),
+                              stream: _db.collection('book').snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                }
+
+                                if (snapshot.hasError) {
+                                  return Center(
+                                      child: Text('Error: ${snapshot.error}'));
+                                }
+
+                                final books = snapshot.data!.docs;
+
+                                return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: books.length,
+                                  itemBuilder: (context, index) {
+                                    var bookData = books[index].data()
+                                        as Map<String, dynamic>;
+
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          right: screenWidth * 0.04),
+                                      child: Bookcard(
+                                        title: bookData['title'] ?? 'No Title',
+                                        author: bookData['author'] ??
+                                            'Unknown Author',
+                                        imageUrl: bookData['bookCover'] ?? '',
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
                           SizedBox(height: screenHeight * 0.03),
                           Info(

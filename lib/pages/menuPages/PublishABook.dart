@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -113,6 +115,8 @@ class _MultiFormPageState extends State<MultiFormPage> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final DatabaseMethods _databaseService = DatabaseMethods();
 
+  final String currentUser = FirebaseAuth.instance.currentUser!.uid;
+
   @override // ✅ Missing override
   void initState() {
     super.initState();
@@ -169,7 +173,7 @@ class _MultiFormPageState extends State<MultiFormPage> {
     request.fields['fileName'] = 'book_image.jpg';
     // change this
     String privateApiKey = 'private_9MoH0BcI0CyoI+15FSakzzoFSqs=';
-    String basicAuth = 'Basic ' + base64Encode(utf8.encode('$privateApiKey:'));
+    String basicAuth = 'Basic ${base64Encode(utf8.encode('$privateApiKey:'))}';
     request.headers['Authorization'] = basicAuth;
 
     final streamedResponse = await request.send();
@@ -193,6 +197,29 @@ class _MultiFormPageState extends State<MultiFormPage> {
     }
   }
 
+  String generateISBN13() {
+    final Random random = Random();
+
+    // Step 1: Start with '978'
+    String isbn = '978';
+
+    // Step 2: Add 9 random digits
+    for (int i = 0; i < 9; i++) {
+      isbn += random.nextInt(10).toString();
+    }
+
+    // Step 3: Calculate the check digit
+    int sum = 0;
+    for (int i = 0; i < isbn.length; i++) {
+      int digit = int.parse(isbn[i]);
+      sum += (i % 2 == 0) ? digit : digit * 3;
+    }
+
+    int checkDigit = (10 - (sum % 10)) % 10;
+
+    return isbn + checkDigit.toString();
+  }
+
   Future<void> pickAndUploadImage() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -200,19 +227,27 @@ class _MultiFormPageState extends State<MultiFormPage> {
     if (pickedFile != null) {
       final file = File(pickedFile.path);
       setState(() {
-        _bookCover = file; // show locally
+        _bookCover = file; // Show locally
       });
 
-      await uploadToImageKit(file); // upload to ImageKit
+      try {
+        await uploadToImageKit(file); // Upload to ImageKit
+        if (_uploadedImageUrl == null) {
+          Fluttertoast.showToast(
+            msg: "Failed to retrieve uploaded image URL.",
+            backgroundColor: Colors.red,
+          );
+        }
+      } catch (error) {
+        Fluttertoast.showToast(
+          msg: "Image upload failed: $error",
+          backgroundColor: Colors.red,
+        );
+      }
     } else {
-      print("No image selected.");
       Fluttertoast.showToast(
         msg: "No image selected. Please choose a book cover.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
       );
     }
   }
@@ -256,12 +291,14 @@ class _MultiFormPageState extends State<MultiFormPage> {
 
               try {
                 String Id = randomAlphaNumeric(10);
-
+                String ISBN = generateISBN13();
                 // Save the book information to Firestore
                 await FirebaseFirestore.instance
                     .collection('book')
                     .doc(Id)
                     .set({
+                  'Id': Id,
+                  'ISBN': ISBN,
                   'title': titleController.text,
                   'author': authorController.text,
                   'description': descriptionController.text,
@@ -300,6 +337,7 @@ class _MultiFormPageState extends State<MultiFormPage> {
                       ? _BookExcerptController.text
                       : null,
                   'bookCover': _uploadedImageUrl,
+                  'userId': currentUser
 
                   // Save the book cover URL
                 }).then((value) {
@@ -666,526 +704,6 @@ class _MultiFormPageState extends State<MultiFormPage> {
           ),
         ),
       ),
-
-      /* Step(
-
-
-        title: Text(
-          '2',
-          style: TextStyle(fontSize: screenWidth * 0.04),
-        ),
-        content: Column(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                color: const Color.fromARGB(255, 167, 160, 176),
-                width: double.infinity,
-                height: screenHeight * 1.5,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: screenWidth * 0.9),
-                    child: Form(
-                      key: _formKey2,
-                      child: Column(
-                        children: [
-                          SizedBox(height: screenHeight * 0.03),
-
-                          // Book Cover Upload Section
-                          GestureDetector(
-                            onTap: _pickCoverImage,
-                            child: Container(
-                              width: screenWidth * 0.4, // Responsive width
-                              height: screenHeight * 0.25,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(15),
-                                border: Border.all(
-                                  color:
-                                      const Color.fromARGB(255, 248, 247, 255),
-                                  width: 2,
-                                ),
-                                image: _bookCover != null
-                                    ? DecorationImage(
-                                        image: FileImage(_bookCover!),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: _bookCover == null
-                                  ? Center(
-                                      child: Text(
-                                        'Upload Cover',
-                                        style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: screenWidth * 0.04,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                          ),
-
-                          SizedBox(height: screenHeight * 0.03),
-
-                          // Title Input
-                          SizedBox(
-                            height: screenHeight * 0.1,
-                            width: screenWidth * 0.9,
-                            child: Textfieldcreate(
-                              text1: 'Book Title',
-                              text2: 'Ex : ',
-                              prefix: Icon(Icons.title),
-                              suffix: Icon(null),
-                              obscureText: false,
-                              controller: titleController,
-                              decoration: _inputDecoration('Book Title'),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Enter title'
-                                      : null,
-                            ),
-                          ),
-
-                          SizedBox(height: screenHeight * 0.03),
-
-                          // Author Input
-                          SizedBox(
-                            height: screenHeight * 0.1,
-                            width: screenWidth * 0.9,
-                            child: Textfieldcreate(
-                              text1: 'Author Name',
-                              text2: 'Ex : Mohammed Dib',
-                              prefix: Icon(Icons.person),
-                              suffix: Icon(null),
-                              obscureText: false,
-                              controller: authorController,
-                              decoration: _inputDecoration('Author Name'),
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Enter author'
-                                      : null,
-                            ),
-                          ),
-                          SizedBox(height: screenHeight * 0.03),
-
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(left: 14),
-                            child: Text(
-                              'Select a Genre',
-                              style: TextStyle(fontSize: screenWidth * 0.045),
-                            ),
-                          ),
-
-                          SizedBox(height: screenHeight * 0.01),
-                          // First Genre Dropdown
-                          SizedBox(
-                            height: screenHeight * 0.1,
-                            width: screenWidth * 0.9,
-                            child: _buildDropdown(
-                                hint: 'Select Genre',
-                                selectedValue: selectedGenre1,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedGenre1 = value;
-                                  });
-                                }),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(left: 14),
-                            child: Text(
-                              'Select a second Genre',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ), // Second Genre Dropdown
-                          SizedBox(height: screenHeight * 0.01),
-                          SizedBox(
-                            height: screenHeight * 0.1,
-                            width: screenWidth * 0.9,
-                            child: _buildDropdown(
-                                hint: 'Select Second Genre',
-                                selectedValue: selectedGenre2,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedGenre2 = value;
-                                  });
-                                }),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          // Description
-                          SizedBox(
-                            width: screenWidth * 0.9,
-                            child: _buildMultilineField(
-                              descriptionController,
-                              'Book Description',
-                              5,
-                              1000,
-                            ),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-
-                          // Target audience
-                          SizedBox(
-                            width: screenWidth * 0.9,
-                            child: _buildMultilineField(
-                              null,
-                              'Target Audience',
-                              3,
-                              500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ), // Set width to fill the available space
-            ),
-          ],
-        ),
-      ),
-
-*/
-
-/*
-
-      Step(
-        state: currentStep > 0 ? StepState.complete : StepState.indexed,
-        isActive: currentStep >= 2,
-        title: Text(
-          'Complete',
-          style: TextStyle(fontSize: screenWidth * 0.04),
-        ),
-        content: Column(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                color: const Color.fromARGB(255, 167, 160, 176),
-                width: double.infinity,
-                height: screenHeight * 2,
-                child: Form(
-                  key: _formKey1,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 80),
-                      SizedBox(
-                        height: screenHeight * 0.2,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Keywords', // Just example text
-                          text2: '',
-                          prefix: Icon(Icons.tag),
-                          suffix: Icon(null),
-                          obscureText: false,
-                          controller: _KeyWordsController,
-                          minLines: 3,
-
-                          decoration: _inputDecoration('Keywords/Tags'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Enter keywords'
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(left: 18),
-                        child: Text(
-                          'Select Language',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: _buildDropdownLang(
-                            hint: 'Select Language',
-                            selectedValue: _selectedLang,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedLang = value;
-                              });
-                            }),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      TextFormField(
-                        controller: _publicationDateController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          labelText: 'Publication Date',
-                        ),
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(2101),
-                          );
-                          if (pickedDate != null) {
-                            setState(() {
-                              _publicationDateController.text =
-                                  DateFormat('yyyy-MM-dd').format(pickedDate);
-                            });
-                          }
-                        },
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      DropdownButtonFormField<String>(
-                        value: _publishementType,
-                        decoration: InputDecoration(
-                          labelText: 'Publishement Type',
-                        ),
-                        items: _pubTypes.map((type) {
-                          return DropdownMenuItem(
-                            value: type,
-                            child: Text(type),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            _publishementType = val;
-                          });
-                        },
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      if (_publishementType == 'Traditional Publishing') ...[
-                        SizedBox(
-                          height: screenHeight * 0.1,
-                          width: screenWidth * 0.9,
-                          child: Textfieldcreate(
-                            text1: 'Publisher info', // Just example text
-                            text2: '',
-                            prefix: Icon(Icons.tag),
-                            suffix: Icon(null),
-                            obscureText: false,
-
-                            controller: _PubInfoController,
-                            decoration: _inputDecoration('Publisher info'),
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Enter Publisher'
-                                : null,
-                          ),
-                        ),
-                      ],
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Price', // You can customize this label
-                          text2:
-                              '', // Optional second text (if not used, keep empty)
-                          prefix: Icon(
-                            Icons.attach_money,
-                          ), // You can change this icon if needed
-                          suffix: Icon(
-                            null,
-                          ), // Add a suffix icon or widget if required
-                          obscureText:
-                              false, // Since it's a price, no need to obscure the text
-                          controller: _PriceController,
-                          keyboardType: TextInputType.number,
-
-                          decoration: _inputDecoration('Price'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Enter price'
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Book Length', // Label or heading text
-                          text2: '',
-                          keyboardType: TextInputType.number,
-                          // Optional subtext or hint, you can customize it
-                          prefix: Icon(
-                            Icons.menu_book_outlined,
-                          ), // Optional, use any relevant icon
-                          suffix: Icon(
-                            null,
-                          ), // Add a suffix widget if needed (like unit: pages)
-                          obscureText: false, // No need to obscure this field
-                          controller: _BookLenController,
-                          decoration: _inputDecoration('Book Length'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Enter book length'
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(left: 14),
-                            child: Text(
-                              'Reading Level',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          ListTile(
-                            title: Text('Beginner'),
-                            leading: Radio<String>(
-                              value: 'Beginner',
-                              groupValue: _readingLevel,
-                              onChanged: (value) {
-                                setState(() {
-                                  _readingLevel = value;
-                                });
-                              },
-                            ),
-                          ),
-                          ListTile(
-                            title: Text('Intermediate'),
-                            leading: Radio<String>(
-                              value: 'Intermediate',
-                              groupValue: _readingLevel,
-                              onChanged: (value) {
-                                setState(() {
-                                  _readingLevel = value;
-                                });
-                              },
-                            ),
-                          ),
-                          ListTile(
-                            title: Text('Advanced'),
-                            leading: Radio<String>(
-                              value: 'Advanced',
-                              groupValue: _readingLevel,
-                              onChanged: (value) {
-                                setState(() {
-                                  _readingLevel = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Book Excerpt', // Main label
-                          text2: '', // Optional sublabel or hint text
-                          prefix: Icon(
-                            Icons.notes,
-                          ), // Icon that fits the idea of an excerpt
-                          suffix: Icon(
-                            null,
-                          ), // Optional, add something like character count if needed
-                          obscureText:
-                              false, // No need to hide text in an excerpt field
-                          controller:
-                              _BookExcerptController, // <-- Consider renaming this to _BookExcerptController
-                          decoration: _inputDecoration('Book Excerpt'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Enter book excerpt'
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Book Series',
-                          text2: '', // Optional sublabel or hint
-                          prefix: Icon(
-                            Icons.collections_bookmark,
-                          ), // Suitable icon for a series
-                          suffix: Icon(
-                            null,
-                          ), // Optional: maybe an info icon if needed
-                          obscureText: false, // No need to obscure
-                          controller:
-                              _BookSeriesController, // Consider renaming this to _BookSeriesController
-                          decoration: _inputDecoration('Book Series'),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Enter book series'
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Book Series Info',
-                          text2: '', // Optional sublabel or description
-                          prefix: Icon(
-                            Icons.info_outline,
-                          ), // Info icon suits this label
-                          suffix:
-                              Icon(null), // Optional: add something if needed
-                          obscureText: false,
-                          controller: _BookSeriesInfoController,
-                          minLines:
-                              2, // Suggestion: rename to _BookSeriesInfoController
-                          decoration: _inputDecoration('Book Series Info'),
-                          validator: (value) => null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Similar Books',
-                          text2: 'Enter titles separated by commas',
-                          prefix: Icon(Icons.book_outlined),
-                          suffix: Icon(null),
-                          obscureText: false,
-                          controller:
-                              _SimilarBooksController, // Consider creating this controller separately
-                          decoration: _inputDecoration(
-                            'Similar Books (comma-separated)',
-                          ),
-                          minLines: 2,
-                          validator: (value) => null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      SizedBox(
-                        height: screenHeight * 0.1,
-                        width: screenWidth * 0.9,
-                        child: Textfieldcreate(
-                          text1: 'Book Website or Social Media',
-                          text2: 'Enter a valid URL or handle',
-                          prefix: Icon(Icons.link),
-                          suffix: Icon(null),
-                          obscureText: false,
-                          controller:
-                              _BookLinkController, // Consider renaming from _BookLenController
-                          decoration: _inputDecoration(
-                            'Book Website or Social Media Link',
-                          ),
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Enter the book website or social media link'
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
-                      FileUploadForm(),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),*/
-
       Step(
         state: currentStep > 0 ? StepState.complete : StepState.indexed,
         isActive: currentStep >= 2,
@@ -1575,9 +1093,9 @@ class _MultiFormPageState extends State<MultiFormPage> {
       width: 340,
       child: CustomDropdown<String>(
         value: selectedValue, // The currently selected value
-        items: _languages.map((_languages) {
+        items: _languages.map((languages) {
           return DropdownMenuItem<String>(
-              value: _languages, child: Text(_languages));
+              value: languages, child: Text(languages));
         }).toList(),
         hintText: hint,
         onChanged: onChanged,

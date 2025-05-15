@@ -1,8 +1,12 @@
 allprojects {
-    repositories {
+   
+            repositories {
         google()
         mavenCentral()
-    }
+        maven { url 'https://artifactory.img.ly/artifactory/imgly' }}
+    
+
+    
 }
 
 rootProject.buildDir = "../build"
